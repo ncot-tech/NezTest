@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NezTest", "NezTest\NezTest.csproj", "{64C4819E-7E13-4EF1-B82D-683989A5689C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nez", "..\..\..\..\Source\Repos\Nez\Nez-PCL\Nez.csproj", "{60B7197D-D0D5-405C-90A2-A56903E9B039}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{64C4819E-7E13-4EF1-B82D-683989A5689C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64C4819E-7E13-4EF1-B82D-683989A5689C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64C4819E-7E13-4EF1-B82D-683989A5689C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60B7197D-D0D5-405C-90A2-A56903E9B039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60B7197D-D0D5-405C-90A2-A56903E9B039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60B7197D-D0D5-405C-90A2-A56903E9B039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60B7197D-D0D5-405C-90A2-A56903E9B039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

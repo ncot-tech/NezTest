@@ -1,22 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Nez;
+using Nez.Sprites;
 
 namespace NezTest
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game1 : Core
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        
-        public Game1()
-        {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-        }
+
+        Scene myScene;
+
+        public Game1() : base(width: 1024, height: 768, isFullScreen: false, enableEntitySystems: false)
+        { }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -27,8 +26,29 @@ namespace NezTest
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            var friction =0.5f;
+            var elasticity = 0.6f;
 
             base.Initialize();
+            
+            Window.AllowUserResizing = true;
+
+            // create our Scene with the DefaultRenderer and a clear color of CornflowerBlue
+            Physics.gravity = Vector2.Zero;
+            myScene = Scene.createWithDefaultRenderer(Color.CornflowerBlue);
+
+            // load a Texture. Note that the Texture is loaded via the scene.content class. This works just like the standard MonoGame Content class
+            // with the big difference being that it is tied to a Scene. When the Scene is unloaded so too is all the content loaded via myScene.content.
+            var beeTexture = myScene.content.Load<Texture2D>("atariBee");
+
+            // setup our Scene by adding some Entities
+            var entityOne = createEntity(new Vector2(200, 200), 15f, friction, elasticity, Vector2.Zero, beeTexture);
+            createWallEntity(new Vector2(512, 700), 1024, 64);// floor
+            createWallEntity(new Vector2(32, 320), 64, 768);
+            createWallEntity(new Vector2(1020, 320), 64, 768);
+            createWallEntity(new Vector2(512, 32), 1024, 64);//roof
+            // set the scene so Nez can take over
+            scene = myScene;
         }
 
         /// <summary>
@@ -38,7 +58,7 @@ namespace NezTest
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -76,8 +96,45 @@ namespace NezTest
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
             base.Draw(gameTime);
+        }
+
+        ArcadeRigidbody createWallEntity(Vector2 position, float width, float height)
+        {
+            var rigidbody = new ArcadeRigidbody()
+                .setMass(0)
+                .setFriction(0)
+                .setElasticity(1.0f);
+
+            var entity = myScene.createEntity(Utils.randomString(3));
+            entity.transform.position = position;
+            var spr = new PrototypeSprite(width, height);
+            spr.color = Color.DarkGoldenrod;
+            entity.addComponent(spr);
+            entity.addComponent(rigidbody);
+            entity.addCollider(new BoxCollider());
+
+            return rigidbody;
+        }
+
+        ArcadeRigidbody createEntity(Vector2 position, float mass, float friction, float elasticity, Vector2 velocity, Texture2D texture)
+        {
+            var rigidbody = new ArcadeRigidbody()
+                .setMass(mass)
+                .setFriction(friction)
+                .setElasticity(elasticity)
+                .setVelocity(velocity);
+
+
+
+            var entity = myScene.createEntity(Utils.randomString(3));
+            entity.transform.position = position;
+            entity.addComponent(new Sprite(texture));
+            entity.addComponent(rigidbody);
+            entity.addComponent(new ImpulseMover());
+            entity.addCollider(new CircleCollider());
+
+            return rigidbody;
         }
     }
 }
