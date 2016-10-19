@@ -24,3 +24,9 @@
 /processorParam:TextureFormat=Color
 /build:atariBee.png
 
+#begin Randomize103.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Randomize103.wav
+

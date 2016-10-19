@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nez;
@@ -26,8 +27,8 @@ namespace NezTest
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            var friction =0.5f;
-            var elasticity = 0.6f;
+            var friction =0.8f;
+            var elasticity = 0.2f;
 
             base.Initialize();
             
@@ -36,11 +37,12 @@ namespace NezTest
             // create our Scene with the DefaultRenderer and a clear color of CornflowerBlue
             Physics.gravity = Vector2.Zero;
             myScene = Scene.createWithDefaultRenderer(Color.CornflowerBlue);
-
+            Input.gamePads[0].isLeftStickVertcialInverted = true;
             // load a Texture. Note that the Texture is loaded via the scene.content class. This works just like the standard MonoGame Content class
             // with the big difference being that it is tied to a Scene. When the Scene is unloaded so too is all the content loaded via myScene.content.
             var beeTexture = myScene.content.Load<Texture2D>("atariBee");
-
+            var noise = myScene.content.Load<SoundEffect>("Randomize103");
+            noise.Play(0.5f, 1.0f, 0.0f);
             // setup our Scene by adding some Entities
             var entityOne = createEntity(new Vector2(200, 200), 15f, friction, elasticity, Vector2.Zero, beeTexture);
             createWallEntity(new Vector2(512, 700), 1024, 64);// floor
