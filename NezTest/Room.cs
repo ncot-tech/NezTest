@@ -4,25 +4,27 @@ namespace NezTest
 {
     public class Room
     {
-        public Tuple<int, int>[] Exits;
+        public int[,] Exits;
+        int numExits;
 
         public Room()
         {
-            Exits = new Tuple<int, int>[4];
+            numExits = 0;
+            Exits = new int[4,2];
             for (int i = 0; i < 4; i++)
             {
-                Exits[i] = new Tuple<int, int>(0, 0);
+                Exits[i, 0] = -1;
+                Exits[i, 1] = -1;
             }
         }
 
-        public void SetExit(int exit, int x, int y)
+        public void AddExit(int x, int y)
         {
-            Exits[exit] = new Tuple<int, int>(x, y);
-        }
-
-        public Tuple<int,int> GetExit(int exit)
-        {
-            return Exits[exit];
+            if (numExits == 4)
+                return;
+            Exits[numExits, 0] = y;
+            Exits[numExits, 1] = x;
+            numExits++;
         }
     }
 }

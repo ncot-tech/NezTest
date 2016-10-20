@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Sprites;
 
+
 namespace NezTest
 {
     /// <summary>
@@ -14,6 +15,7 @@ namespace NezTest
     {
 
         Scene myScene;
+        RoomManager roomManager;
 
         public Game1() : base(width: 1024, height: 768, isFullScreen: false, enableEntitySystems: false)
         { }
@@ -33,6 +35,9 @@ namespace NezTest
             base.Initialize();
             
             Window.AllowUserResizing = true;
+
+            roomManager = new RoomManager();
+            roomManager.Generate();
 
             // create our Scene with the DefaultRenderer and a clear color of CornflowerBlue
             Physics.gravity = Vector2.Zero;
