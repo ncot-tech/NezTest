@@ -6,7 +6,7 @@ namespace NezTest
 {
     class RoomManager
     {
-        Room[,] rooms;
+        public Room[,] rooms;
 
         Random rng;
 
@@ -78,16 +78,7 @@ namespace NezTest
                 Debug.WriteLine("At co-ords (" + currentX.ToString() + "," + currentY.ToString() + ")");
                 Debug.Indent();
                 Debug.WriteLine("Found" + validCells.Count.ToString() + " valid exits.");
-                //Debug.Indent();
-                //for (int i = 0; i < validCells.Count; i++)
-                //{
-                //    int __x = validCells[i] % 10;
-                //    int __y = validCells[i] / 10;
-                //    Debug.WriteLine("Exit: (" + __x.ToString() + "," + __y.ToString() + ")");
-                //}
-                //Debug.Unindent();
 
-                // if validcells length is zero
                 if (validCells.Count == 0)
                 {
                     // set currentxy to be currentxy.exits[0] (backtrack)
