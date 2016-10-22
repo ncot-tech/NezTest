@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -6,15 +7,16 @@ namespace NezTest
 {
     class RoomManager
     {
-        public Room[,] rooms;
-
+        private Room[,] rooms;
+        public Point currentRoomCoords { get; private set; }
         Random rng;
-
+        
         public RoomManager()
         {
             rooms = new Room[10, 10];
             rng = new Random();
             rooms[0, 0] = new Room(0,0);
+            currentRoomCoords = new Point(0, 0);
         }
 
         private void GetExitCoord(int exit, int _x, int _y, out int x, out int y)
@@ -42,6 +44,42 @@ namespace NezTest
                     y = 0;
                     break;
             }
+        }
+
+        /// <summary>
+        /// Returns a bit pattern to represent which exits exist
+        /// They go N, E, S, W
+        /// </summary>
+        /// <returns>a 4 bool array, True means the exit exists</returns>
+        public bool[] GetCurrentExits()
+        {
+            bool[] exits = new bool[] { false, false, false, false };
+
+            for (int i = 0; i < 4; i++)
+            {
+                int exitDir = rooms[currentRoomCoords.Y, currentRoomCoords.X].CheckValidExit((Exit)i);
+                if (exitDir != -1)
+                {
+                    exits[i] = true;
+                }
+            }
+
+            return exits;
+        }
+
+        public bool ExitRoomToThe(Exit exit)
+        {
+            bool exitSuccess = false;
+
+            int exitDir = rooms[currentRoomCoords.Y, currentRoomCoords.X].CheckValidExit(exit);
+            if (exitDir != -1)
+            {
+                Point newExits = rooms[currentRoomCoords.Y, currentRoomCoords.X].GetExitEntry(exitDir);
+                currentRoomCoords = newExits;
+                exitSuccess = true;
+            }
+
+            return exitSuccess;
         }
 
         /// <summary>
@@ -82,8 +120,8 @@ namespace NezTest
                 if (validCells.Count == 0)
                 {
                     // set currentxy to be currentxy.exits[0] (backtrack)
-                    int tx = rooms[currentY, currentX].Exits[0,1];
-                    int ty = rooms[currentY, currentX].Exits[0,0];
+                    int tx = rooms[currentY, currentX].Exits[0].X;
+                    int ty = rooms[currentY, currentX].Exits[0].Y;
                     currentX = tx;
                     currentY = ty;
                     Debug.WriteLine("Backtracking to (" + currentX.ToString() + "," + currentY.ToString() + ")");
