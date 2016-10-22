@@ -14,7 +14,7 @@ namespace NezTest
         {
             rooms = new Room[10, 10];
             rng = new Random();
-            rooms[0, 0] = new Room();
+            rooms[0, 0] = new Room(0,0);
         }
 
         private void GetExitCoord(int exit, int _x, int _y, out int x, out int y)
@@ -106,7 +106,7 @@ namespace NezTest
                 nextY = validCells[dir] / 10;
                 rooms[currentY, currentX].AddExit(nextX, nextY);
                 // add currentxy to validcells[rand] exits
-                rooms[nextY, nextX] = new Room();
+                rooms[nextY, nextX] = new Room(nextX, nextY);
                 rooms[nextY, nextX].AddExit(currentX, currentY);
 
                 Debug.WriteLine("Adding new room at (" + nextX.ToString() + "," + nextY.ToString() + ")");

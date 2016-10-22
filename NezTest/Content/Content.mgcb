@@ -30,3 +30,9 @@
 /processorParam:Quality=Best
 /build:Randomize103.wav
 
+#begin DebugFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:DebugFont.spritefont
+

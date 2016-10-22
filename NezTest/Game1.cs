@@ -24,6 +24,10 @@ namespace NezTest
         genCoord makeGridCoord;
         genCoord2 makeDoorCoord;
 
+        int currentX, currentY;
+
+        SpriteFont font;
+
         public Game1() : base(width: 1024, height: 768, isFullScreen: false, enableEntitySystems: false)
         { }
 
@@ -35,6 +39,8 @@ namespace NezTest
         /// </summary>
         protected override void Initialize()
         {
+            font = Content.Load<SpriteFont>("DebugFont");
+
             makeGridCoord = xy => 32 + (xy * (64 + 2));
 
             makeDoorCoord = (xy,off) => off + (xy * (64 + 2));
@@ -47,11 +53,12 @@ namespace NezTest
             var elasticity = 0.2f;
 
             base.Initialize();
-            
-            Window.AllowUserResizing = true;
+            Window.Title = "Room Generator";
+            Window.AllowUserResizing = false;
 
             roomManager = new RoomManager();
             roomManager.Generate();
+            currentX = currentY = 0;
 
             // create our Scene with the DefaultRenderer and a clear color of CornflowerBlue
             Physics.gravity = Vector2.Zero;
@@ -105,7 +112,52 @@ namespace NezTest
 
             // TODO: Add your update logic here
 
+            SwitchRoom();
+
             base.Update(gameTime);
+        }
+
+        private void SwitchRoom()
+        {
+            if (GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
+            {
+                int exitDir = roomManager.rooms[currentY, currentX].CheckValidExit(0);
+                if (exitDir != -1) {
+                    int[] newExits = roomManager.rooms[currentY, currentX].GetExit(exitDir);
+                    currentX = newExits[0];
+                    currentY = newExits[1];
+                }
+            } else
+            if (GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
+            {
+                int exitDir = roomManager.rooms[currentY, currentX].CheckValidExit(1);
+                if (exitDir != -1)
+                {
+                    int[] newExits = roomManager.rooms[currentY, currentX].GetExit(exitDir);
+                    currentX = newExits[0];
+                    currentY = newExits[1];
+                }
+            } else
+            if (GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
+            {
+                int exitDir = roomManager.rooms[currentY, currentX].CheckValidExit(2);
+                if (exitDir != -1)
+                {
+                    int[] newExits = roomManager.rooms[currentY, currentX].GetExit(exitDir);
+                    currentX = newExits[0];
+                    currentY = newExits[1];
+                }
+            } else
+            if (GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
+            {
+                int exitDir = roomManager.rooms[currentY, currentX].CheckValidExit(3);
+                if (exitDir != -1)
+                {
+                    int[] newExits = roomManager.rooms[currentY, currentX].GetExit(exitDir);
+                    currentX = newExits[0];
+                    currentY = newExits[1];
+                }
+            }
         }
 
         /// <summary>
@@ -118,11 +170,55 @@ namespace NezTest
 
             base.Draw(gameTime);
 
-            DrawGrid();
-            // TODO: Add your drawing code here
-            
+            DrawRoom();           
+        }
 
-            
+        private void DrawRoom()
+        {
+            spriteBatch.Begin();
+            // Write the room's co-ords on the middle
+            string exitLabel = "(" + currentX.ToString() + "," + currentY.ToString() + ")";
+            Vector2 FontOrigin = font.MeasureString(exitLabel) / 2;
+            Vector2 FontPos = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            spriteBatch.DrawString(font, exitLabel, FontPos, Color.Yellow, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+
+            if (roomManager.rooms[currentY, currentX].CheckValidExit(0) != -1)    // N
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0,0, (GraphicsDevice.Viewport.Width / 2) - 128, 4), Color.White);
+                spriteBatch.Draw(whiteRectangle, new Rectangle((GraphicsDevice.Viewport.Width / 2) + 128, 0, (GraphicsDevice.Viewport.Width / 2) - 128, 4), Color.White);
+            } else
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, 4), Color.White);
+            }
+
+            if (roomManager.rooms[currentY, currentX].CheckValidExit(1) != -1)  // E
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(GraphicsDevice.Viewport.Width-4, 0, 4, (GraphicsDevice.Viewport.Height / 2) + 128), Color.White);
+                spriteBatch.Draw(whiteRectangle, new Rectangle(GraphicsDevice.Viewport.Width-4, (GraphicsDevice.Viewport.Height-128), 4, (GraphicsDevice.Viewport.Height / 2) + 128), Color.White);
+            } else
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(GraphicsDevice.Viewport.Width-4, 0, 4, GraphicsDevice.Viewport.Height), Color.White);
+            }
+
+            if (roomManager.rooms[currentY, currentX].CheckValidExit(2) != -1)  // S
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, GraphicsDevice.Viewport.Height - 4, (GraphicsDevice.Viewport.Width / 2) - 128, 4), Color.White);
+                spriteBatch.Draw(whiteRectangle, new Rectangle((GraphicsDevice.Viewport.Width / 2) + 128, GraphicsDevice.Viewport.Height - 4, (GraphicsDevice.Viewport.Width / 2) - 128, 4), Color.White);
+            } else
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, GraphicsDevice.Viewport.Height-4, GraphicsDevice.Viewport.Width, 4), Color.White);
+            }
+
+            if (roomManager.rooms[currentY, currentX].CheckValidExit(3) != -1)  // W
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, 0, 4, (GraphicsDevice.Viewport.Height / 2) + 128), Color.White);
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, (GraphicsDevice.Viewport.Height - 128), 4, (GraphicsDevice.Viewport.Height / 2) + 128), Color.White);
+            } else
+            {
+                spriteBatch.Draw(whiteRectangle, new Rectangle(0, 0, 4, GraphicsDevice.Viewport.Height), Color.White);
+            }
+
+            spriteBatch.End();
         }
 
         private void DrawGrid()
@@ -137,29 +233,25 @@ namespace NezTest
                         // Draw a rect to represent the room
                         spriteBatch.Draw(whiteRectangle, new Rectangle(makeGridCoord(x), makeGridCoord(y), 64, 64), Color.White);
                         // Draw a little rect to show a link for each exit
-                        for (int i = 0; i < 4; i++)
+
+                        if (roomManager.rooms[y, x].CheckValidExit(0) != -1)
                         {
-                            int ex = roomManager.rooms[y, x].Exits[i, 1];
-                            int ey = roomManager.rooms[y, x].Exits[i, 0];
-                            if (ex != -1)
-                            {
-                                // Work out the exit direction
-                                ex -= x;
-                                ey -= y;
-                                if (ex == 0 && ey == -1)            // N
-                                {
-                                    spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x,32+16), makeDoorCoord(y,32-2), 32, 2), Color.White);
-                                } else if (ex == 1 && ey == 0)      // E                                                            
-                                {                                                                                                      
-                                    spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x,32+64), makeDoorCoord(y,32+16), 2, 32), Color.White);
-                                } else if (ex == 0 && ey == 1)      // S                                                            
-                                {                                                                                                     
-                                    spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x,32+16), makeDoorCoord(y,32+64), 32, 2), Color.White);
-                                } else if (ex == 0 && ey == -1)     // W                                                            
-                                {                                                                                                      
-                                    spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x,32-2), makeDoorCoord(y,32+16), 2, 32), Color.White);
-                                }
-                            }
+                            spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x, 32 + 16), makeDoorCoord(y, 32 - 2), 32, 2), Color.White);
+                        }
+
+                        if (roomManager.rooms[y, x].CheckValidExit(1) != -1)
+                        {
+                            spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x, 32 + 64), makeDoorCoord(y, 32 + 16), 2, 32), Color.White);
+                        }
+
+                        if (roomManager.rooms[y, x].CheckValidExit(2) != -1)
+                        {
+                            spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x, 32 + 16), makeDoorCoord(y, 32 + 64), 32, 2), Color.White);
+                        }
+
+                        if (roomManager.rooms[y, x].CheckValidExit(3) != -1)
+                        {
+                            spriteBatch.Draw(whiteRectangle, new Rectangle(makeDoorCoord(x, 32 - 2), makeDoorCoord(y, 32 + 16), 2, 32), Color.White);
                         }
                     }
                 }
